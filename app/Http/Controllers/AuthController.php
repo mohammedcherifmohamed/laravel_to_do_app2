@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Models\User;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -12,13 +13,12 @@ class AuthController extends Controller
     }
 
     public function LoginPost(Request $req){
-
         $req->validate([
             "email" => "required|email",
-            "password" => "required|min:3"
+            "password" => "required|min:3",
         ]);
         $credentials = $req->only('email',"password");
-        if(AUTH::attempt($credentials)){
+        if(Auth::attempt($credentials)){
             return redirect()->intended(route('home'));
         }
         return redirect(route('Login'))->with("error","Invalid Email or Password") ;
@@ -26,11 +26,11 @@ class AuthController extends Controller
 
 
     public function Register(){
-
+        
         return view('auth.Register');
     }
     
-    public function RegisterPost(Reauest $req){
+    public function RegisterPost(Request $req){
         $req->validate([
             "email" => "required|email|unique:users",
             "name" => "required",
@@ -39,7 +39,11 @@ class AuthController extends Controller
         $user = new User();
         $user->name = $req->name ;
         $user->email = $req->email;
+        $user->password = bcrypt($req->password);
 
-        return view('auth.Register');
+        if($user->save()){
+            return redirect(route("Login"))->with("success","Registration Successful");
+        }
+        return redirect(route("register"))->with("error","Registration Failed");
     }
 }
