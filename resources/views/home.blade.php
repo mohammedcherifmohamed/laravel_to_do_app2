@@ -14,12 +14,19 @@
             <div class="card">
             <div class="card-body p-5">
 
-                <form class="d-flex justify-content-center align-items-center mb-4">
-                <div data-mdb-input-init class="form-outline flex-fill">
-                    <input type="text" id="form2" class="form-control" />
-                    <label class="form-label" for="form2">New task...</label>
-                </div>
-                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-info ms-2">Add</button>
+                <form action="{{route('tasks.store')}}" method="POST" class="d-flex justify-content-center align-items-center mb-4">
+                    @csrf
+                    <div data-mdb-input-init class="form-outline flex-fill">
+                         @error('success_add')
+                            <div class="text-success" >{{$message}}</div>
+                        @enderror
+                        <input name="title" type="text" id="form2" class="form-control" />
+                        <label class="form-label" for="form2">New task...</label>
+                        @error('title')
+                            <div class="text-danger" >{{$message}}</div>
+                        @enderror
+                    </div>
+                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-info ms-2">Add</button>
                 </form>
 
                 <!-- Tabs navs -->
@@ -44,31 +51,18 @@
                 <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel"
                     aria-labelledby="ex1-tab-1">
                     <ul class="list-group mb-0">
-                    <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
-                        style="background-color: #f4f6f7;">
-                        <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." checked />
-                        <s>Cras justo odio</s>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
-                        style="background-color: #f4f6f7;">
-                        <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." checked />
-                        <s>Dapibus ac facilisis in</s>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
-                        style="background-color: #f4f6f7;">
-                        <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                        Morbi leo risus
-                    </li>
-                    <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
-                        style="background-color: #f4f6f7;">
-                        <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                        Porta ac consectetur ac
-                    </li>
-                    <li class="list-group-item d-flex align-items-center border-0 mb-0 rounded"
-                        style="background-color: #f4f6f7;">
-                        <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                        Vestibulum at eros
-                    </li>
+                        @foreach($tasks as $task)
+                        <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
+                            style="background-color: #f4f6f7;">
+                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." checked />
+                            @if($task->completed)
+                                <s>{{$task->title}}</s>
+                            @else
+                            <h6>{{$task->title}}</h6>
+                        @endif
+                        </li>
+                        @endforeach
+
                     </ul>
                 </div>
                 <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
