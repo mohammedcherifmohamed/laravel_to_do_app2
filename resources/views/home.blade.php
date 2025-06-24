@@ -13,13 +13,12 @@
 
             <div class="card">
             <div class="card-body p-5">
-
                 <form action="{{route('tasks.store')}}" method="POST" class="d-flex justify-content-center align-items-center mb-4">
                     @csrf
                     <div data-mdb-input-init class="form-outline flex-fill">
-                         @error('success_add')
-                            <div class="text-success" >{{$message}}</div>
-                        @enderror
+                        @if (session('success'))                            
+                            <x-alert type="success">{{session('success')}}</x-alert>
+                        @endif
                         <input name="title" type="text" id="form2" class="form-control" />
                         <label class="form-label" for="form2">New task...</label>
                         @error('title')
@@ -50,20 +49,41 @@
                 <div class="tab-content" id="ex1-content">
                 <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel"
                     aria-labelledby="ex1-tab-1">
-                    <ul class="list-group mb-0">
-                        @foreach($tasks as $task)
-                        <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded"
-                            style="background-color: #f4f6f7;">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." checked />
-                            @if($task->completed)
-                                <s>{{$task->title}}</s>
-                            @else
-                            <h6>{{$task->title}}</h6>
-                        @endif
-                        </li>
-                        @endforeach
+                 <ul class="space-y-2">
+    @foreach($tasks as $task)
+    <li class="flex justify-between items-center p-4 bg-gray-100 rounded shadow-sm hover:bg-gray-200 transition">
+        <div class="flex items-center gap-3">
 
-                    </ul>
+            <form action="{{ route('tasks.toggle', $task->id) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <input 
+                    type="checkbox" 
+                    onchange="this.form.submit()" 
+                    class="form-checkbox h-5 w-5 text-indigo-600" 
+                    {{ $task->completed ? 'checked' : '' }}
+                >
+            </form>
+
+            @if($task->completed)
+                <s class="text-gray-500">{{ $task->title }}</s>
+            @else
+                <span class="text-gray-800 font-medium">{{ $task->title }}</span>
+            @endif
+        </div>
+
+        <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="text-red-500 hover:text-red-700 transition" title="Delete">
+                🗑️
+            </button>
+        </form>
+    </li>
+@endforeach
+
+</ul>
+
                 </div>
                 <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
                     <ul class="list-group mb-0">

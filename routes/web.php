@@ -17,7 +17,9 @@ Route::post('/loginPost', [AuthController::class , "LoginPost"])->name('Login.po
 
 Route::post("/tasks",[TaskController::class , 'addTask'])->name('tasks.store');
 
+Route::delete("/tasks/{id}",[TaskController::class , 'deleteTask'])->name('tasks.destroy');
 
+Route::patch("/tasks/complete/{id}",[TaskController::class , 'toggleCompete'])->name('tasks.toggle');
 
 
 
