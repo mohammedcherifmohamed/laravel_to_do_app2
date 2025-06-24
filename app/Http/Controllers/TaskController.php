@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TaskModel ;
+use Illuminate\Support\Facades\Auth;
 
 
 class TaskController extends Controller
 {
 
     public function index(){
-        $tasks = TaskModel::latest()->get();
-        return view('home',compact('tasks'));
+      $tasks = TaskModel::where('user_id', Auth::id())
+                      ->latest()
+                      ->get();
+        $user = Auth::user() ;
+        return view('home',compact('tasks','user'));
     }
 
     public function addTask(Request $req){
@@ -23,6 +27,7 @@ class TaskController extends Controller
         TaskModel::create([
             "title" => $req->title ,
             "completed" => false ,
+            "user_id" => Auth::id() ,
         ]);
         
         return redirect()->back() ;

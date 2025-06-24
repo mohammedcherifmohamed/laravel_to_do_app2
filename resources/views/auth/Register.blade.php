@@ -1,59 +1,84 @@
 @extends('Layout.main')
-@section('title')
-Register Page
-@endsection
+
+@section('title', 'Register Page')
+
 @section('content')
- <main class="form-signin w-100 m-auto"> 
-    <form action="{{route("register.post")}}" method="POST" >
-    @csrf
-        <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-     <h1 class="h3 mb-3 fw-normal">Please Register Here</h1>
-          <h3 class="h3 mb-3 fw-normal">you Have An account <a href="/login">Login Here</a> </h3>
+<main class="form-signin w-100 m-auto mt-5">
+    <form action="{{ route('register.post') }}" method="POST" enctype="multipart/form-data">
+        @csrf
 
-          <div class="form-floating my-5">
-            <input name="name" type="text" class="form-control" id="floatingName" placeholder="Your Name">
-            <label for="floatingName">Name</label>
+        {{-- Logo & Heading --}}
+        <div class="text-center mb-4">
+            <img class="mb-3" src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57">
+            <h1 class="h3 mb-3 fw-normal">Create a New Account</h1>
+            <p class="text-muted">
+                Already have an account? <a href="{{ url('/login') }}">Login here</a>
+            </p>
+        </div>
+
+        {{-- Flash Messages --}}
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        {{-- Name --}}
+        <div class="form-floating mb-3">
+            <input name="name" type="text" class="form-control @error('name') is-invalid @enderror" id="nameInput" placeholder="Your Name" value="{{ old('name') }}" required>
+            <label for="nameInput">Full Name</label>
             @error('name')
-                <span class="text-danger">{{$message}}</span>
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
-         </div> 
-         <div class="form-floating my-5">
-            <input name="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com"> 
-            <label for="floatingInput">Email address</label> 
+        </div>
+
+        {{-- Email --}}
+        <div class="form-floating mb-3">
+            <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" id="emailInput" placeholder="name@example.com" value="{{ old('email') }}" required>
+            <label for="emailInput">Email address</label>
             @error('email')
-                <span class="text-danger" >{{$message}}</span>
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
-         </div> 
-         <div class="form-floating my-5">
-            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Password</label> 
-             @error('password')
-                <span class="text-danger" >{{$message}}</span>
+        </div>
 
+        {{-- Password --}}
+        <div class="form-floating mb-3">
+            <input name="password" type="password" class="form-control @error('password') is-invalid @enderror" id="passwordInput" placeholder="Password" required>
+            <label for="passwordInput">Password</label>
+            @error('password')
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
-        </div> 
-         <div class="form-floating my-5">
-            <input type="password" name="password_verififcation" class="form-control" id="password_verififcation" placeholder="Verify your Password">
-            <label for="password_verififcation">Password</label> 
+        </div>
+
+        {{-- Password Confirmation --}}
+        <div class="form-floating mb-3">
+            <input name="password_verififcation" type="password" class="form-control @error('password_verififcation') is-invalid @enderror" id="confirmPasswordInput" placeholder="Confirm Password" required>
+            <label for="confirmPasswordInput">Confirm Password</label>
             @error('password_verififcation')
-                <span class="text-danger" >{{$message}}</span>
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
-        </div> 
-        @if(session()->has("success"))
-            <div class="alert alert-success" >{{session()->get("success")}}</div>
-        @endif
-          @if(session()->has("error"))
-            <div class="alert alert-danger">{{session()->get("error")}}</div>
-        @endif
-        <div class="form-check text-start my-3"> 
-            <input class="form-check-input" type="checkbox" value="remember-me" id="checkDefault">
-             <label class="form-check-label" for="checkDefault">
-Remember me
-</label>
- </div> 
- <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button> 
- <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2025</p> 
-</form>
- </main> 
+        </div>
+        <div class="form-floating mb-5">
+            <input name="image" type="file"  id="image" >
+            @error('image')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
 
- @endsection()
+        {{-- Remember Me --}}
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" name="remember" id="rememberCheck">
+            <label class="form-check-label" for="rememberCheck">
+                Remember me
+            </label>
+        </div>
+
+        {{-- Submit Button --}}
+        <button class="btn btn-primary w-100 py-2" type="submit">Register</button>
+
+        {{-- Footer --}}
+        <p class="mt-5 mb-3 text-muted text-center">&copy; {{ date('Y') }} YourAppName</p>
+    </form>
+</main>
+@endsection

@@ -2,12 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TaskController ;
+use App\Http\Controllers\TaskController ; 
 
 
-Route::get('/', [TaskController::class , 'index'])->name('home');
+Route::get('/', [TaskController::class , 'index'])->middleware('auth')->name('home');
 
-Route::get('/login', [AuthController::class , "Login"])->name("Login");
+Route::get('/login', [AuthController::class , "Login"])->name("login");
+
+Route::get('/logout', [AuthController::class , "logout"])->name("logout");
 
 Route::get('/register', [AuthController::class , "Register"])->name("register");
 

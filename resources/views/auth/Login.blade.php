@@ -1,37 +1,54 @@
 @extends('Layout.main')
-@section('title')
-Login Page
-@endsection
-@section('content')
- <main class="form-signin w-100 m-auto"> 
-    <form action="{{route("Login.post")}}" method="POST" >
-      @csrf 
-       @if(session()->has("success"))
-            <div class="alert alert-success" >{{session()->get("success")}}</div>
-        @endif
-          @if(session()->has("error"))
-            <div class="alert alert-danger" >{{session()->get("error")}}</div>
-        @endif
-        <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-     <h3 class="h3 mb-3 fw-normal">dont Have An account <a href="/register">Register Here</a> </h3>
-      <div class="form-floating my-5"> 
-        <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com"> 
-        <label for="floatingInput">Email address</label> 
-    </div> 
-    <div class="form-floating">
-         <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
-          <label for="floatingPassword">Password</label> 
-        </div> 
-        <div class="form-check text-start my-3"> 
-            <input class="form-check-input" type="checkbox" value="remember-me" id="checkDefault">
-             <label class="form-check-label" for="checkDefault">
-Remember me
-</label>
- </div> 
- <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button> 
- <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2025</p> 
-</form>
- </main> 
 
- @endsection()
+@section('title', 'Login Page')
+
+@section('content')
+<main class="form-signin w-100 m-auto mt-5">
+    <form action="{{ route('Login.post') }}" method="POST">
+        @csrf
+
+        {{-- Logo --}}
+        <div class="text-center mb-4">
+            <img class="mb-3" src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57">
+            <h1 class="h3 mb-3 fw-normal">Sign In to Your Account</h1>
+            <p class="text-muted">
+                Don't have an account? <a href="{{ url('/register') }}">Register here</a>
+            </p>
+        </div>
+
+        {{-- Success & Error Messages --}}
+        @if(session()->has('success'))
+             <x-alert type="success">{{session('success')}}</x-alert>
+        @endif
+        @if(session()->has('error'))
+            <x-alert type="danger">{{session('error')}}</x-alert>
+        @endif
+
+        {{-- Email Input --}}
+        <div class="form-floating mb-3">
+            <input type="email" name="email" class="form-control" id="emailInput" placeholder="name@example.com" required>
+            <label for="emailInput">Email address</label>
+        </div>
+
+        {{-- Password Input --}}
+        <div class="form-floating mb-3">
+            <input type="password" name="password" class="form-control" id="passwordInput" placeholder="Password" required>
+            <label for="passwordInput">Password</label>
+        </div>
+
+        {{-- Remember Me --}}
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" name="remember" id="rememberCheck">
+            <label class="form-check-label" for="rememberCheck">
+                Remember me
+            </label>
+        </div>
+
+        {{-- Submit Button --}}
+        <button class="btn btn-primary w-100 py-2" type="submit">Sign In</button>
+
+        {{-- Footer --}}
+        <p class="mt-5 mb-3 text-muted text-center">&copy; {{ date('Y') }} YourAppName</p>
+    </form>
+</main>
+@endsection
